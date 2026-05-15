@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: Arial, sans-serif; background-color: #f0f4f8; }
+      nav { display: flex; justify-content: space-between; align-items: center; background-color: #1e40af; padding: 15px 30px; }
+      .logo { color: white; font-size: 24px; font-weight: bold; cursor: pointer; }
+      nav ul { list-style: none; display: flex; gap: 20px; align-items: center; }
+      nav ul li a { color: white; text-decoration: none; font-size: 16px; }
+      .chiqish-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px; }
+      .welcome { background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 40px 30px; }
+      .welcome h1 { font-size: 32px; margin-bottom: 10px; }
+      .welcome p { font-size: 18px; opacity: 0.9; }
+      .stats { display: flex; justify-content: center; gap: 20px; padding: 40px 30px; flex-wrap: wrap; }
+      .stat-card { background: white; border-radius: 16px; padding: 25px 35px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 150px; }
+      .stat-card h2 { font-size: 40px; color: #1e40af; margin-bottom: 5px; }
+      .stat-card p { color: #555; font-size: 14px; }
+      .actions { display: flex; justify-content: center; gap: 20px; padding: 0 30px 40px; flex-wrap: wrap; }
+      .action-card { background: white; border-radius: 16px; padding: 30px; width: 250px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }
+      .action-card:hover { transform: translateY(-5px); }
+      .action-card .icon { font-size: 48px; margin-bottom: 15px; }
+      .action-card h3 { color: #1e40af; margin-bottom: 10px; }
+      .action-card p { color: #555; font-size: 14px; }
+      footer { background-color: #1e40af; color: white; text-align: center; padding: 20px; margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+
+    <nav>
+      <div class="logo" onclick="window.location.href='index.html'">LearnIELTS</div>
+      <ul>
+        <li><a href="index.html">Bosh sahifa</a></li>
+        <li><a href="kurslar.html">Kurslar</a></li>
+        <li><a href="vocab.html">Vocab</a></li>
+        <li><a href="taymer.html">Taymer</a></li>
+        <li style="color:white" id="userInfo"></li>
+        <li><button class="chiqish-btn" onclick="chiqish()">Chiqish</button></li>
+      </ul>
+    </nav>
+
+    <div class="welcome">
+      <h1 id="welcomeText">Xush kelibsiz!</h1>
+      <p>Bugun ham o'rganishni davom eting 💪</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h2>0</h2>
+        <p>Tugatilgan darslar</p>
+      </div>
+      <div class="stat-card">
+        <h2>0</h2>
+        <p>Yodlangan so'zlar</p>
+      </div>
+      <div class="stat-card">
+        <h2>0</h2>
+        <p>Pomodoro sessiyalar</p>
+      </div>
+      <div class="stat-card">
+        <h2>0</h2>
+        <p>Kunlik streak</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="action-card" onclick="window.location.href='kurslar.html'">
+        <div class="icon">📚</div>
+        <h3>Kurslar</h3>
+        <p>IELTS kurslarini davom ettiring</p>
+      </div>
+      <div class="action-card" onclick="window.location.href='vocab.html'">
+        <div class="icon">📝</div>
+        <h3>Vocab</h3>
+        <p>Yangi so'zlar o'rganing</p>
+      </div>
+      <div class="action-card" onclick="window.location.href='taymer.html'">
+        <div class="icon">⏱</div>
+        <h3>Pomodoro</h3>
+        <p>Samarali o'qishni boshlang</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2026 LearnIELTS — Barcha huquqlar himoyalangan</p>
+    </footer>
+
+    <script>
+      let user = localStorage.getItem('user');
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        user = JSON.parse(user);
+        document.getElementById('welcomeText').textContent = '👋 Xush kelibsiz, ' + user.ism + '!';
+        document.getElementById('userInfo').textContent = user.ism;
+      }
+
+      function chiqish() {
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+      }
+    </script>
+
+  </body>
+</html>

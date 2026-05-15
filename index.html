@@ -43,7 +43,7 @@
     <section class="hero">
       <h1>IELTS ga 0 dan tayyorlan!</h1>
       <p>O'zbek tilida eng qulay IELTS platformasi</p>
-      <button onclick="window.location.href='register.html'">Boshlash</button>
+      <button id="boshBtn">Boshlash</button>
     </section>
 
     <div class="cards">
@@ -85,6 +85,15 @@
         localStorage.removeItem('user');
         window.location.reload();
       }
+
+      document.getElementById('boshBtn').addEventListener('click', function() {
+        let user = localStorage.getItem('user');
+        if (user) {
+          window.location.href = 'dashboard.html';
+        } else {
+          window.location.href = 'register.html';
+        }
+      });
     </script>
 
   </body>
