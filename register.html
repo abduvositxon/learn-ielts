@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ro'yxatdan o'tish</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1e40af, #3b82f6); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+      .form-box { background: white; padding: 40px; border-radius: 20px; width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+      .form-box h2 { text-align: center; color: #1e40af; margin-bottom: 30px; font-size: 28px; }
+      .input-group { margin-bottom: 20px; }
+      .input-group label { display: block; color: #555; margin-bottom: 8px; font-size: 14px; }
+      .input-group input { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; outline: none; }
+      .input-group input:focus { border-color: #2563eb; }
+      button { width: 100%; padding: 14px; background-color: #2563eb; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; }
+      .login-link { text-align: center; margin-top: 20px; font-size: 14px; color: #555; }
+      .login-link a { color: #2563eb; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+
+    <div class="form-box">
+      <h2>📝 Ro'yxatdan o'tish</h2>
+
+      <div class="input-group">
+        <label>Ismingiz</label>
+        <input type="text" id="name" placeholder="Ismingizni kiriting">
+      </div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="email@gmail.com">
+      </div>
+
+      <div class="input-group">
+        <label>Parol</label>
+        <input type="password" id="password" placeholder="Parol kiriting">
+      </div>
+
+      <button onclick="register()">Ro'yxatdan o'tish</button>
+
+      <div class="login-link">
+        <p>Hisobingiz bormi? <a href="#">Kirish</a></p>
+      </div>
+    </div>
+
+    <script>
+      function register() {
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+
+        if (name === '' || email === '' || password === '') {
+          alert('Iltimos, barcha maydonlarni to\'ldiring!');
+        } else {
+          alert('Tabriklaymiz ' + name + '! Ro\'yxatdan muvaffaqiyatli o\'tdingiz!');
+        }
+      }
+    </script>
+    <script>
+  function handleRegister(event) {
+    event.preventDefault(); // Sahifa yangilanib ketishini to'xtatadi
+
+    // Ma'lumotlarni yig'ib olish
+    const name = document.querySelector('input[type="text"]').value;
+    const email = document.querySelector('input[type="email"]').value;
+    const password = document.querySelector('input[type="password"]').value;
+
+    // Oddiy tekshiruv (Validatsiya)
+    if (name === "" || email === "" || password === "") {
+      alert("Iltimos, barcha maydonlarni to'ldiring!");
+      return;
+    }
+
+    // Ma'lumotlarni vaqtinchalik saqlash (Browser xotirasi)
+    const user = { name, email, password };
+    localStorage.setItem('currentUser', JSON.stringify(user));
+
+    alert("Ro'yxatdan muvaffaqiyatli o'tdingiz!");
+    
+    // Asosiy sahifaga yoki kurslarga yo'naltirish
+    window.location.href = 'index.html';
+  }
+
+  // Formaga hodisani bog'lash
+  document.querySelector('button').onclick = handleRegister;
+</script>
+  </body>
+</html>

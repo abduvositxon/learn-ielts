@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kurslar</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: Arial, sans-serif; background-color: #f0f4f8; }
+      nav { display: flex; justify-content: space-between; align-items: center; background-color: #1e40af; padding: 15px 30px; }
+      .logo { color: white; font-size: 24px; font-weight: bold; cursor: pointer; }
+      nav ul { list-style: none; display: flex; gap: 20px; }
+      nav ul li a { color: white; text-decoration: none; font-size: 16px; }
+      .hero { text-align: center; padding: 50px 20px; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; }
+      .hero h1 { font-size: 36px; margin-bottom: 10px; }
+      .hero p { font-size: 18px; }
+      .kurslar { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 50px 30px; }
+      .kurs-card { background: white; border-radius: 16px; width: 300px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; }
+      .kurs-top { background: linear-gradient(135deg, #1e40af, #3b82f6); padding: 30px; text-align: center; color: white; font-size: 40px; }
+      .kurs-body { padding: 20px; }
+      .kurs-body h3 { color: #1e40af; margin-bottom: 10px; font-size: 20px; }
+      .kurs-body p { color: #555; font-size: 14px; margin-bottom: 15px; line-height: 1.6; }
+      .kurs-body .price { font-size: 22px; font-weight: bold; color: #1e40af; margin-bottom: 15px; }
+      .kurs-body .free { color: green; }
+      .kurs-body button { width: 100%; padding: 12px; background-color: #2563eb; color: white; border: none; border-radius: 10px; font-size: 15px; cursor: pointer; font-weight: bold; }
+      footer { background-color: #1e40af; color: white; text-align: center; padding: 20px; margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+
+    <nav>
+      <div class="logo" onclick="window.location.href='index.html'">LearnIELTS</div>
+      <ul>
+        <li><a href="index.html">Bosh sahifa</a></li>
+        <li><a href="kurslar.html">Kurslar</a></li>
+        <li><a href="vocab.html">Vocab</a></li>
+        <li><a href="taymer.html">Taymer</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero">
+      <h1>📚 Kurslar</h1>
+      <p>O'zingizga mos kursni tanlang</p>
+    </div>
+
+    <div class="kurslar">
+
+      <div class="kurs-card">
+        <div class="kurs-top">🎯</div>
+        <div class="kurs-body">
+          <h3>IELTS Kirish kursi</h3>
+          <p>IELTS nima? Qanday tayyorlanish kerak? Boshlang'ich bilimlar.</p>
+          <div class="price free">Bepul</div>
+          <button onclick="alert('Kurs tez kunda qo\'shiladi!')">Boshlash</button>
+        </div>
+      </div>
+
+      <div class="kurs-card">
+        <div class="kurs-top">✍️</div>
+        <div class="kurs-body">
+          <h3>IELTS Writing</h3>
+          <p>Task 1 va Task 2 bo'yicha to'liq qo'llanma va amaliyot.</p>
+          <div class="price">299,000 so'm</div>
+          <button onclick="alert('Tez kunda!')">Ko'rish</button>
+        </div>
+      </div>
+
+      <div class="kurs-card">
+        <div class="kurs-top">🎧</div>
+        <div class="kurs-body">
+          <h3>IELTS Listening</h3>
+          <p>Listening bo'limida yuqori ball olish uchun maxsus mashqlar.</p>
+          <div class="price">249,000 so'm</div>
+          <button onclick="alert('Tez kunda!')">Ko'rish</button>
+        </div>
+      </div>
+
+      <div class="kurs-card">
+        <div class="kurs-top">📖</div>
+        <div class="kurs-body">
+          <h3>IELTS Reading</h3>
+          <p>Reading texnikalar va tezkor o'qish usullari.</p>
+          <div class="price">249,000 so'm</div>
+          <button onclick="alert('Tez kunda!')">Ko'rish</button>
+        </div>
+      </div>
+
+      <div class="kurs-card">
+        <div class="kurs-top">🗣️</div>
+        <div class="kurs-body">
+          <h3>IELTS Speaking</h3>
+          <p>Speaking bo'limida ishonch bilan gaplashish usullari.</p>
+          <div class="price">299,000 so'm</div>
+          <button onclick="alert('Tez kunda!')">Ko'rish</button>
+        </div>
+      </div>
+
+      <div class="kurs-card">
+        <div class="kurs-top">🏆</div>
+        <div class="kurs-body">
+          <h3>IELTS To'liq kurs</h3>
+          <p>Barcha bo'limlar: Writing, Reading, Listening, Speaking.</p>
+          <div class="price">799,000 so'm</div>
+          <button onclick="alert('Tez kunda!')">Ko'rish</button>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      <p>© 2026 LearnIELTS — Barcha huquqlar himoyalangan</p>
+    </footer>
+
+  </body>
+</html>

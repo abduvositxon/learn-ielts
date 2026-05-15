@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pomodoro Taymer</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: Arial, sans-serif; background-color: #f0f4f8; }
+      nav { display: flex; justify-content: space-between; align-items: center; background-color: #1e40af; padding: 15px 30px; }
+      .logo { color: white; font-size: 24px; font-weight: bold; cursor: pointer; }
+      nav ul { list-style: none; display: flex; gap: 20px; }
+      nav ul li a { color: white; text-decoration: none; font-size: 16px; }
+      .hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; }
+      .hero h1 { font-size: 36px; margin-bottom: 10px; }
+      .hero p { font-size: 18px; }
+      .taymer-box { max-width: 500px; margin: 50px auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+      .mode-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
+      .mode-btn { padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold; background: #e2e8f0; color: #555; }
+      .mode-btn.active { background: #2563eb; color: white; }
+      .vaqt { font-size: 96px; font-weight: bold; color: #1e40af; margin-bottom: 10px; }
+      .holat { font-size: 20px; color: #555; margin-bottom: 30px; }
+      .controls { display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; }
+      .btn-boshlash { background: #2563eb; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; cursor: pointer; font-weight: bold; }
+      .btn-toxtash { background: #ef4444; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; cursor: pointer; font-weight: bold; }
+      .btn-reset { background: #6b7280; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; cursor: pointer; font-weight: bold; }
+      .sessiya { font-size: 16px; color: #888; }
+      .sessiya span { color: #2563eb; font-weight: bold; }
+      footer { background-color: #1e40af; color: white; text-align: center; padding: 20px; margin-top: 50px; }
+    </style>
+  </head>
+  <body>
+
+    <nav>
+      <div class="logo" onclick="window.location.href='index.html'">LearnIELTS</div>
+      <ul>
+        <li><a href="index.html">Bosh sahifa</a></li>
+        <li><a href="kurslar.html">Kurslar</a></li>
+        <li><a href="vocab.html">Vocab</a></li>
+        <li><a href="taymer.html">Taymer</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero">
+      <h1>⏱ Pomodoro Taymer</h1>
+      <p>Samarali o'qish uchun aqlli taymer</p>
+    </div>
+
+    <div class="taymer-box">
+
+      <div class="mode-buttons">
+        <button class="mode-btn active" onclick="rejim(25, 'Dars vaqti', this)">🎯 Dars (25 daq)</button>
+        <button class="mode-btn" onclick="rejim(5, 'Qisqa tanaffus', this)">☕ Tanaffus (5 daq)</button>
+        <button class="mode-btn" onclick="rejim(15, 'Uzun tanaffus', this)">🛋 Uzoq (15 daq)</button>
+      </div>
+
+      <div class="vaqt" id="vaqt">25:00</div>
+      <div class="holat" id="holat">Darsga tayyor!</div>
+
+      <div class="controls">
+        <button class="btn-boshlash" onclick="boshlash()">▶ Boshlash</button>
+        <button class="btn-toxtash" onclick="toxtash()">⏸ To'xtatish</button>
+        <button class="btn-reset" onclick="reset()">🔄 Reset</button>
+      </div>
+
+      <div class="sessiya">
+        Bajarilgan sessiyalar: <span id="sessiya">0</span>
+      </div>
+
+    </div>
+
+    <footer>
+      <p>© 2026 LearnIELTS — Barcha huquqlar himoyalangan</p>
+    </footer>
+
+    <script>
+      let daqiqa = 25;
+      let soniya = 0;
+      let interval = null;
+      let ishlayapti = false;
+      let sessiyaSoni = 0;
+
+      function rejim(daq, holat, btn) {
+        toxtash();
+        daqiqa = daq;
+        soniya = 0;
+        document.getElementById('vaqt').textContent = daq + ':00';
+        document.getElementById('holat').textContent = holat;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+
+      function boshlash() {
+        if (ishlayapti) return;
+        ishlayapti = true;
+        document.getElementById('holat').textContent = 'Dars ketmoqda... 💪';
+        interval = setInterval(function() {
+          if (soniya === 0) {
+            if (daqiqa === 0) {
+              clearInterval(interval);
+              ishlayapti = false;
+              sessiyaSoni++;
+              document.getElementById('sessiya').textContent = sessiyaSoni;
+              document.getElementById('holat').textContent = 'Tayyor! Tabriklaymiz! 🎉';
+              alert('Vaqt tugadi! Yaxshi ishladingiz! 🎉');
+              return;
+            }
+            daqiqa--;
+            soniya = 59;
+          } else {
+            soniya--;
+          }
+          let d = daqiqa < 10 ? '0' + daqiqa : daqiqa;
+          let s = soniya < 10 ? '0' + soniya : soniya;
+          document.getElementById('vaqt').textContent = d + ':' + s;
+        }, 1000);
+      }
+
+      function toxtash() {
+        clearInterval(interval);
+        ishlayapti = false;
+        document.getElementById('holat').textContent = 'To\'xtatildi ⏸';
+      }
+
+      function reset() {
+        toxtash();
+        daqiqa = 25;
+        soniya = 0;
+        document.getElementById('vaqt').textContent = '25:00';
+        document.getElementById('holat').textContent = 'Darsga tayyor!';
+      }
+    </script>
+
+  </body>
+</html>
