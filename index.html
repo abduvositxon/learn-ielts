@@ -6,9 +6,11 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font-family: Arial, sans-serif; background-color: #f0f4f8; }
       nav { display: flex; justify-content: space-between; align-items: center; background-color: #1e40af; padding: 15px 30px; }
-      .logo { color: white; font-size: 24px; font-weight: bold; }
-      nav ul { list-style: none; display: flex; gap: 20px; }
+      .logo { color: white; font-size: 24px; font-weight: bold; cursor: pointer; }
+      nav ul { list-style: none; display: flex; gap: 20px; align-items: center; }
       nav ul li a { color: white; text-decoration: none; font-size: 16px; }
+      .user-info { color: white; font-size: 15px; }
+      .chiqish-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px; }
       .hero { text-align: center; padding: 100px 20px; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; }
       .hero h1 { font-size: 48px; margin-bottom: 20px; }
       .hero p { font-size: 20px; margin-bottom: 30px; }
@@ -27,12 +29,14 @@
   <body>
 
     <nav>
-      <div class="logo">LearnIELTS</div>
+      <div class="logo" onclick="window.location.href='index.html'">LearnIELTS</div>
       <ul>
         <li><a href="index.html">Bosh sahifa</a></li>
         <li><a href="kurslar.html">Kurslar</a></li>
         <li><a href="vocab.html">Vocab</a></li>
         <li><a href="taymer.html">Taymer</a></li>
+        <li class="user-info" id="userInfo"></li>
+        <li><button class="chiqish-btn" id="chiqishBtn" style="display:none" onclick="chiqish()">Chiqish</button></li>
       </ul>
     </nav>
 
@@ -68,6 +72,20 @@
         <a href="#">Maxfiylik siyosati</a>
       </div>
     </footer>
+
+    <script>
+      let user = localStorage.getItem('user');
+      if (user) {
+        user = JSON.parse(user);
+        document.getElementById('userInfo').textContent = '👋 Salom, ' + user.ism + '!';
+        document.getElementById('chiqishBtn').style.display = 'block';
+      }
+
+      function chiqish() {
+        localStorage.removeItem('user');
+        window.location.reload();
+      }
+    </script>
 
   </body>
 </html>

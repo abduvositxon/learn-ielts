@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Kirish</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1e40af, #3b82f6); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
@@ -12,6 +13,9 @@
       .input-group input { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; outline: none; }
       .input-group input:focus { border-color: #2563eb; }
       button { width: 100%; padding: 14px; background-color: #2563eb; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; }
+      .xabar { text-align: center; margin-top: 15px; font-size: 14px; padding: 10px; border-radius: 8px; display: none; }
+      .xabar.success { background: #dcfce7; color: #16a34a; display: block; }
+      .xabar.error { background: #fee2e2; color: #dc2626; display: block; }
       .register-link { text-align: center; margin-top: 20px; font-size: 14px; color: #555; }
       .register-link a { color: #2563eb; text-decoration: none; }
     </style>
@@ -31,7 +35,9 @@
         <input type="password" id="password" placeholder="Parol kiriting">
       </div>
 
-      <button onclick="login()">Kirish</button>
+      <button id="loginBtn">Kirish</button>
+
+      <div class="xabar" id="xabar"></div>
 
       <div class="register-link">
         <p>Hisobingiz yo'qmi? <a href="register.html">Ro'yxatdan o'tish</a></p>
@@ -39,17 +45,39 @@
     </div>
 
     <script>
-      function login() {
-        let email = document.getElementById('email').value;
-        let password = document.getElementById('password').value;
+      const DB = window.supabase.createClient(
+        'https://astwrxgbjjmgsccrvaxj.supabase.co',
+        'sb_publishable_2ZRm8hql_0W5PfZd4hkalw_jbq_giSk'
+      );
 
-        if (email === '' || password === '') {
-          alert('Iltimos, barcha maydonlarni to\'ldiring!');
-        } else {
-          alert('Xush kelibsiz! Sahifaga o\'tilmoqda...');
-          window.location.href = 'index.html';
+      document.getElementById('loginBtn').addEventListener('click', async function() {
+        let email = document.getElementById('email').value;
+        let parol = document.getElementById('password').value;
+        let xabar = document.getElementById('xabar');
+
+        if (email === '' || parol === '') {
+          xabar.className = 'xabar error';
+          xabar.textContent = 'Iltimos, barcha maydonlarni to\'ldiring!';
+          return;
         }
-      }
+
+        const { data, error } = await DB
+          .from('users')
+          .select('*')
+          .eq('email', email)
+          .eq('parol', parol)
+          .single();
+
+        if (error || !data) {
+          xabar.className = 'xabar error';
+          xabar.textContent = 'Email yoki parol noto\'g\'ri!';
+        } else {
+          xabar.className = 'xabar success';
+          xabar.textContent = 'Xush kelibsiz, ' + data.ism + '!';
+          localStorage.setItem('user', JSON.stringify(data));
+          setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+        }
+      });
     </script>
 
   </body>
