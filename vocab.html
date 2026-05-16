@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Vocab</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font-family: Arial, sans-serif; background-color: #f0f4f8; }
@@ -12,18 +13,29 @@
       .hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; }
       .hero h1 { font-size: 36px; margin-bottom: 10px; }
       .hero p { font-size: 18px; }
-      .vocab-box { max-width: 600px; margin: 50px auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+      .search-box { max-width: 600px; margin: 30px auto; padding: 0 20px; }
+      .search-box input { width: 100%; padding: 15px 20px; border: 2px solid #e2e8f0; border-radius: 30px; font-size: 16px; outline: none; }
+      .search-box input:focus { border-color: #2563eb; }
+      .filters { max-width: 600px; margin: 0 auto 20px; padding: 0 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+      .filter-btn { padding: 8px 18px; border: 2px solid #2563eb; border-radius: 20px; cursor: pointer; font-size: 14px; background: white; color: #2563eb; }
+      .filter-btn.active { background: #2563eb; color: white; }
+      .vocab-box { max-width: 600px; margin: 0 auto 30px; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
       .word { font-size: 48px; font-weight: bold; color: #1e40af; margin-bottom: 10px; }
       .listen-btn { background: none; border: 2px solid #1e40af; color: #1e40af; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 16px; margin-bottom: 15px; }
       .pronunciation { font-size: 18px; color: #888; margin-bottom: 20px; }
       .meaning { font-size: 20px; color: #333; margin-bottom: 10px; }
       .example { font-size: 16px; color: #555; font-style: italic; margin-bottom: 30px; padding: 15px; background: #f0f4f8; border-radius: 10px; }
+      .level-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 13px; margin-bottom: 20px; text-transform: capitalize; }
+      .beginner { background: #dcfce7; color: #16a34a; }
+      .intermediate { background: #fef9c3; color: #ca8a04; }
+      .advanced { background: #fee2e2; color: #dc2626; }
       .buttons { display: flex; gap: 15px; justify-content: center; }
       .btn-bilaman { background: #22c55e; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; }
       .btn-bilmayman { background: #ef4444; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; }
-      .progress { max-width: 600px; margin: 0 auto 20px; text-align: center; color: #555; font-size: 16px; }
-      .progress-bar { background: #e2e8f0; border-radius: 10px; height: 10px; margin-top: 8px; }
-      .progress-fill { background: #2563eb; height: 10px; border-radius: 10px; transition: width 0.3s; }
+      .progress { max-width: 600px; margin: 0 auto 20px; text-align: center; color: #555; font-size: 16px; padding: 0 20px; }
+      .progress-bar { background: #e2e8f0; border-radius: 10px; height: 10px; margin-top: 8px; position: relative; overflow: hidden; }
+      .progress-fill { background: #2563eb; height: 10px; border-radius: 10px; width: 0%; transition: width 0.3s; }
+      .loading { text-align: center; padding: 50px; font-size: 18px; color: #555; }
       footer { background-color: #1e40af; color: white; text-align: center; padding: 20px; margin-top: 50px; }
     </style>
   </head>
@@ -44,19 +56,33 @@
       <p>Ingliz so'zlarini oson va tez yodlang</p>
     </div>
 
+    <div class="search-box">
+      <input type="text" id="search" placeholder="🔍 So'z qidiring... (inglizcha yoki o'zbekcha)">
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filter('all', this)">Hammasi</button>
+      <button class="filter-btn" onclick="filter('beginner', this)">🟢 Boshlang'ich</button>
+      <button class="filter-btn" onclick="filter('intermediate', this)">🟡 O'rta</button>
+      <button class="filter-btn" onclick="filter('advanced', this)">🔴 Yuqori</button>
+    </div>
+
     <div class="progress">
-      <span id="progress-text">1 / 10 so'z</span>
+      <span id="progress-text">Yuklanmoqda...</span>
       <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill" style="width: 10%"></div>
+        <div class="progress-fill" id="progress-fill"></div>
       </div>
     </div>
 
-    <div class="vocab-box">
-      <div class="word" id="word">Abundant</div>
+    <div id="loading" class="loading">⏳ So'zlar yuklanmoqda...</div>
+
+    <div class="vocab-box" id="vocab-box" style="display:none">
+      <div class="word" id="word"></div>
       <button class="listen-btn" onclick="ovozli()">🔊 Tinglash</button>
-      <div class="pronunciation" id="pronunciation">[ ə-BUN-dənt ]</div>
-      <div class="meaning" id="meaning">🇺🇿 Ko'p, mo'l-ko'l</div>
-      <div class="example" id="example">"There is abundant evidence that exercise is good for you."</div>
+      <div class="pronunciation" id="pronunciation"></div>
+      <div class="meaning" id="meaning"></div>
+      <div class="example" id="example"></div>
+      <div id="level-badge" class="level-badge"></div>
       <div class="buttons">
         <button class="btn-bilmayman" onclick="keyingi()">❌ Bilmadim</button>
         <button class="btn-bilaman" onclick="keyingi()">✅ Bildim</button>
@@ -68,43 +94,127 @@
     </footer>
 
     <script>
-      const sozlar = [
-        { word: "Abundant", pronunciation: "[ ə-BUN-dənt ]", meaning: "🇺🇿 Ko'p, mo'l-ko'l", example: "There is abundant evidence that exercise is good for you." },
-        { word: "Ambiguous", pronunciation: "[ am-BIG-yoo-əs ]", meaning: "🇺🇿 Noaniq, ikki ma'noli", example: "The instructions were ambiguous and confusing." },
-        { word: "Benevolent", pronunciation: "[ bə-NEV-ə-lənt ]", meaning: "🇺🇿 Xayrixoh, mehribon", example: "She was a benevolent leader who cared about her people." },
-        { word: "Comprehensive", pronunciation: "[ kom-prə-HEN-siv ]", meaning: "🇺🇿 To'liq, keng qamrovli", example: "We need a comprehensive plan to solve this problem." },
-        { word: "Deteriorate", pronunciation: "[ dih-TEER-ee-ə-rayt ]", meaning: "🇺🇿 Yomonlashmoq, pasaymoq", example: "His health began to deteriorate rapidly." },
-        { word: "Elaborate", pronunciation: "[ ih-LAB-ər-it ]", meaning: "🇺🇿 Batafsil, murakkab", example: "She gave an elaborate explanation of the process." },
-        { word: "Flourish", pronunciation: "[ FLUR-ish ]", meaning: "🇺🇿 Gullab-yashnash, rivojlanmoq", example: "Businesses flourish in a stable economy." },
-        { word: "Inevitable", pronunciation: "[ in-EV-i-tə-bəl ]", meaning: "🇺🇿 Muqarrar, oldini bo'lmas", example: "Change is inevitable in life." },
-        { word: "Justify", pronunciation: "[ JUS-tə-fy ]", meaning: "🇺🇿 Asoslash, oqlash", example: "Can you justify your decision?" },
-        { word: "Mitigate", pronunciation: "[ MIT-i-gayt ]", meaning: "🇺🇿 Yumshatmoq, kamaytirmoq", example: "We must mitigate the effects of climate change." }
-      ];
+      const DB = window.supabase.createClient(
+        'https://astwrxgbjjmgsccrvaxj.supabase.co',
+        'sb_publishable_2ZRm8hql_0W5PfZd4hkalw_jbq_giSk'
+      );
 
+      let sozlar = [];
+      let filteredSozlar = [];
       let joriy = 0;
+      let activeFilter = 'all';
+
+      async function sozlarniYukla() {
+        const { data, error } = await DB
+          .from('vocab')
+          .select('*');
+
+        if (error) {
+          document.getElementById('loading').textContent = 'Xatolik yuz berdi!';
+          console.error(error);
+          return;
+        }
+
+        sozlar = data || [];
+        filteredSozlar = [...sozlar];
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('vocab-box').style.display = 'block';
+        sozKorsat();
+      }
+
+      function sozKorsat() {
+        if (filteredSozlar.length === 0) {
+          document.getElementById('word').textContent = 'So\'z topilmadi';
+          document.getElementById('pronunciation').textContent = '';
+          document.getElementById('meaning').textContent = '';
+          document.getElementById('example').textContent = '';
+          document.getElementById('level-badge').style.display = 'none';
+          document.getElementById('progress-text').textContent = '0 / 0 so\'z';
+          document.getElementById('progress-fill').style.width = '0%';
+          return;
+        }
+        
+        let soz = filteredSozlar[joriy];
+        
+        document.getElementById('word').textContent = soz.word || '';
+        document.getElementById('pronunciation').textContent = soz.pronunciation || '';
+        document.getElementById('meaning').textContent = soz.meaning || '';
+        
+        let ex = soz.example || '';
+        document.getElementById('example').textContent = ex ? '"' + ex + '"' : '';
+        
+        let lvl = (soz.level || '').toLowerCase().trim();
+        let badge = document.getElementById('level-badge');
+        
+        if (lvl) {
+          badge.style.display = 'inline-block';
+          badge.textContent = lvl;
+          badge.className = 'level-badge ' + lvl;
+        } else {
+          badge.style.display = 'none';
+        }
+        
+        document.getElementById('progress-text').textContent = (joriy + 1) + ' / ' + filteredSozlar.length + ' so\'z';
+        document.getElementById('progress-fill').style.width = ((joriy + 1) / filteredSozlar.length * 100) + '%';
+      }
 
       function ovozli() {
         let soz = document.getElementById('word').textContent;
-        let utterance = new SpeechSynthesisUtterance(soz);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.8;
-        speechSynthesis.speak(utterance);
+        if(soz && soz !== 'So\'z topilmadi') {
+          let utterance = new SpeechSynthesisUtterance(soz);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.8;
+          speechSynthesis.speak(utterance);
+        }
       }
 
       function keyingi() {
+        if (filteredSozlar.length === 0) return;
         joriy++;
-        if (joriy >= sozlar.length) {
-          alert('Tabriklaymiz! Barcha so\'zlarni ko\'rdingiz! 🎉');
+        if (joriy >= filteredSozlar.length) {
+          alert('Tabriklaymiz! Barcha so\'zlarni ko\'rib chiqdingiz! 🎉');
           joriy = 0;
         }
-        document.getElementById('word').textContent = sozlar[joriy].word;
-        document.getElementById('pronunciation').textContent = sozlar[joriy].pronunciation;
-        document.getElementById('meaning').textContent = sozlar[joriy].meaning;
-        document.getElementById('example').textContent = '"' + sozlar[joriy].example + '"';
-        document.getElementById('progress-text').textContent = (joriy + 1) + ' / ' + sozlar.length + ' so\'z';
-        document.getElementById('progress-fill').style.width = ((joriy + 1) / sozlar.length * 100) + '%';
+        sozKorsat();
       }
-    </script>
 
+      function filter(level, btn) {
+        activeFilter = level;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyAllFilters();
+      }
+
+      document.getElementById('search').addEventListener('input', function() {
+        applyAllFilters();
+      });
+
+      function applyAllFilters() {
+        joriy = 0;
+        let query = document.getElementById('search').value.toLowerCase().trim();
+        let natija = [...sozlar];
+        
+        if (activeFilter !== 'all') {
+          natija = natija.filter(s => {
+            let l = (s.level || '').toLowerCase().trim();
+            return l === activeFilter.toLowerCase();
+          });
+        }
+        
+        if (query !== '') {
+          natija = natija.filter(s => {
+            let w = (s.word || '').toLowerCase();
+            let m = (s.meaning || '').toLowerCase();
+            return w.includes(query) || m.includes(query);
+          });
+        }
+        
+        filteredSozlar = natija;
+        sozKorsat();
+      }
+
+      sozlarniYukla();
+    </script>
   </body>
 </html>
